@@ -1,3 +1,4 @@
-azure-storage-queue
 azure-identity
+azure-servicebus
+azure-storage-queue
 python-dotenv

@@ -15,7 +15,7 @@ try:
     print(f"Publisher ID: {PUBLISHER_ID}")
 
     queue_client = QueueClient(
-        f"https://{os.environ['STORAGE_ACCOUNT_NAME']}.queue.core.windows.net",
+        f"https://{os.environ['STORAGE_ACCOUNT']}.queue.core.windows.net",
         queue_name=QUEUE_NAME,
         credential=DefaultAzureCredential())
 

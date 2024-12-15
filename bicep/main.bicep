@@ -8,3 +8,12 @@ module storage 'storage-account.bicep' = {
     principalId: principalId
   }
 }
+
+module serviceBus 'service-bus.bicep' = {
+  name: 'serviceBusDeployment'
+  scope: resourceGroup()
+  params: {
+    name: toLower(substring('servicebus${uniqueString(resourceGroup().id)}', 0, 20))
+    principalId: principalId
+  }
+}

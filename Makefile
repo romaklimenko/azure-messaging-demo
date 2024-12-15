@@ -27,8 +27,11 @@ eh_sub:
 sb_pub:
 	python ./python/service_bus/publisher.py
 
-sb_sub:
-	python ./python/service_bus/subscriber.py
+sb_sub1:
+	python ./python/service_bus/subscriber_one.py
+
+sb_sub2:
+	python ./python/service_bus/subscriber_two.py
 
 sa_pub:
 	python ./python/storage_account/publisher.py

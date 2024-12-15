@@ -1,10 +1,9 @@
 # pylint: disable=missing-module-docstring
-import json
 import os
 
 import dotenv
 from azure.identity import DefaultAzureCredential
-from azure.servicebus import ServiceBusClient, ServiceBusMessage
+from azure.servicebus import ServiceBusClient
 
 dotenv.load_dotenv()
 
@@ -14,14 +13,12 @@ servicebus_client = ServiceBusClient(
     f"sb://{SERVICE_BUS_NAMESPACE}.servicebus.windows.net",
     credential=DefaultAzureCredential())
 
-topic_sender = servicebus_client.get_topic_sender(topic_name="topic1")
+subscription_receiver = servicebus_client.get_subscription_receiver(
+    topic_name="topic1", subscription_name="subscription1")
 
-for i in range(10):
-    message = ServiceBusMessage(json.dumps({"message": i}))
-    topic_sender.send_messages(message)
-    print(f"Message {i} sent to topic1")
-
-topic_sender.close()
-servicebus_client.close()
+with subscription_receiver:
+    for message in subscription_receiver:
+        print(f"Received: {message}")
+        subscription_receiver.complete_message(message)
 
 print("Bye...")

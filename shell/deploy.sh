@@ -24,4 +24,10 @@ STORAGE_ACCOUNT_DEPLOYMENT_OUTPUT=$(az deployment group show \
     --name storageAccountDeployment \
     --query properties.outputs)
 
-echo "STORAGE_ACCOUNT_NAME=$(jq -r '.storageAccountName.value' <<< $STORAGE_ACCOUNT_DEPLOYMENT_OUTPUT)" > .env
+SERVICE_BUS_DEPLOYMENT_OUTPUT=$(az deployment group show \
+    --resource-group $RESOURCE_GROUP \
+    --name serviceBusDeployment \
+    --query properties.outputs)
+
+echo "STORAGE_ACCOUNT=$(jq -r '.storageAccountName.value' <<< $STORAGE_ACCOUNT_DEPLOYMENT_OUTPUT)" > .env
+echo "SERVICE_BUS_NAMESPACE=$(jq -r '.serviceBusNamespaceName.value' <<< $SERVICE_BUS_DEPLOYMENT_OUTPUT)" >> .env
