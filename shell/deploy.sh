@@ -1,3 +1,9 @@
+#!/bin/bash
+
+if ! az account show > /dev/null 2>&1; then
+    az login
+fi
+
 RESOURCE_GROUP=$(jq -r '.parameters.resourceGroupName.value' ./bicep/resource-group.parameters.json)
 LOCATION=$(jq -r '.parameters.location.value' ./bicep/resource-group.parameters.json)
 
@@ -13,7 +19,6 @@ az deployment group create \
     --parameters ./bicep/main.parameters.json \
     --parameters principalId=$PRINCIPAL_ID
 
-# print Bicep outputs
 STORAGE_ACCOUNT_DEPLOYMENT_OUTPUT=$(az deployment group show \
     --resource-group $RESOURCE_GROUP \
     --name storageAccountDeployment \
