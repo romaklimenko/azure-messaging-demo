@@ -35,7 +35,14 @@ EVENT_HUB_DEPLOYMENT_OUTPUT=$(az deployment group show \
     --name eventHubDeployment \
     --query properties.outputs)
 
+EVENT_GRID_DEPLOYMENT_OUTPUT=$(az deployment group show \
+    --resource-group $RESOURCE_GROUP \
+    --name eventGridDeployment \
+    --query properties.outputs)
+
 echo "STORAGE_ACCOUNT=$(jq -r '.storageAccountName.value' <<< $STORAGE_ACCOUNT_DEPLOYMENT_OUTPUT)" > .env
 echo "SERVICE_BUS_NAMESPACE=$(jq -r '.serviceBusNamespaceName.value' <<< $SERVICE_BUS_DEPLOYMENT_OUTPUT)" >> .env
 echo "EVENT_HUB_NAMESPACE=$(jq -r '.eventHubNamespaceName.value' <<< $EVENT_HUB_DEPLOYMENT_OUTPUT)" >> .env
 echo "EVENT_HUB=$(jq -r '.eventHubName.value' <<< $EVENT_HUB_DEPLOYMENT_OUTPUT)" >> .env
+echo "EVENT_GRID_HOST_NAME=$(jq -r '.eventGridHostName.value' <<< $EVENT_GRID_DEPLOYMENT_OUTPUT)" >> .env
+echo "EVENT_GRID_TOPIC=$(jq -r '.eventGridTopicName.value' <<< $EVENT_GRID_DEPLOYMENT_OUTPUT)" >> .env

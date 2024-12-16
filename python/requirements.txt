@@ -1,3 +1,4 @@
+azure-eventgrid
 azure-eventhub
 azure-identity
 azure-servicebus

@@ -26,3 +26,12 @@ module eventHub 'event-hub.bicep' = {
     principalId: principalId
   }
 }
+
+module eventGrid 'event-grid.bicep' = {
+  name: 'eventGridDeployment'
+  scope: resourceGroup()
+  params: {
+    name: toLower(substring('eventgrid${uniqueString(resourceGroup().id)}', 0, 20))
+    principalId: principalId
+  }
+}
