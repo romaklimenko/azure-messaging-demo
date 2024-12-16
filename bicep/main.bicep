@@ -17,3 +17,12 @@ module serviceBus 'service-bus.bicep' = {
     principalId: principalId
   }
 }
+
+module eventHub 'event-hub.bicep' = {
+  name: 'eventHubDeployment'
+  scope: resourceGroup()
+  params: {
+    name: toLower(substring('eventhub${uniqueString(resourceGroup().id)}', 0, 20))
+    principalId: principalId
+  }
+}

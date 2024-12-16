@@ -26,8 +26,8 @@ resource subscription2 'Microsoft.ServiceBus/namespaces/topics/subscriptions@202
   name: 'subscription2'
 }
 
-resource roleAssignment1 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(serviceBusNamespace.id, 'ServiceBusDataSender', principalId)
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(serviceBusNamespace.id, 'ServiceBusDataOwner', principalId)
   scope: serviceBusNamespace
   properties: {
     roleDefinitionId: subscriptionResourceId(
