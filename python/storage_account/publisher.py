@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring
 import os
 import time
-import uuid
 
 import dotenv
 from azure.identity import DefaultAzureCredential
@@ -10,23 +9,21 @@ from azure.storage.queue import QueueClient
 dotenv.load_dotenv()
 
 try:
+    STORAGE_ACCOUNT = os.environ["STORAGE_ACCOUNT"]
     QUEUE_NAME = "queue1"
-    PUBLISHER_ID = str(uuid.uuid4())
-    print(f"Publisher ID: {PUBLISHER_ID}")
 
     queue_client = QueueClient(
-        f"https://{os.environ['STORAGE_ACCOUNT']}.queue.core.windows.net",
+        f"https://{STORAGE_ACCOUNT}.queue.core.windows.net",
         queue_name=QUEUE_NAME,
         credential=DefaultAzureCredential())
 
-    i = 0
-
-    while True:
-        i += 1
-        queue_client.send_message(
-            {"publisher_id": PUBLISHER_ID, "message": i})
-        print(f'Message {i} sent by Publisher {PUBLISHER_ID}')
-        time.sleep(1)
+    with queue_client:
+        i = 0
+        while True:
+            queue_client.send_message({"message": (i := i + 1)})
+            print(f"Message {i} is sent.")
+            if i % 10 == 0:
+                time.sleep(10)
 
 except KeyboardInterrupt:
     print("Bye...")

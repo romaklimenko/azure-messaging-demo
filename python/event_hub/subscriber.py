@@ -2,22 +2,35 @@
 import os
 
 import dotenv
-from azure.eventhub import EventHubConsumerClient
+from azure.eventhub import EventHubConsumerClient, PartitionContext
 from azure.identity import DefaultAzureCredential
 
 dotenv.load_dotenv()
 
-EVENT_HUB_NAMESPACE = os.environ["EVENT_HUB_NAMESPACE"]
-EVENT_HUB = os.environ["EVENT_HUB"]
+try:
 
-consumer = EventHubConsumerClient(
-    fully_qualified_namespace=f"{EVENT_HUB_NAMESPACE}.servicebus.windows.net",
-    eventhub_name=EVENT_HUB,
-    consumer_group='$Default',
-    credential=DefaultAzureCredential())
+    EVENT_HUB_NAMESPACE = os.environ["EVENT_HUB_NAMESPACE"]
+    EVENT_HUB = os.environ["EVENT_HUB"]
 
-with consumer:
-    consumer.receive(on_event=lambda _, event: print(
-        f"Received event: {event.body_as_str()}.\n"))
+    consumer = EventHubConsumerClient(
+        fully_qualified_namespace=f"{
+            EVENT_HUB_NAMESPACE}.servicebus.windows.net",
+        eventhub_name=EVENT_HUB,
+        consumer_group="$Default",
+        credential=DefaultAzureCredential())
 
-print("Bye...")
+    # pylint: disable=missing-function-docstring
+    def on_event_batch(partition_context: PartitionContext, events):
+        for event in events:
+            print(f"Received event: {event.body_as_str()}.")
+        partition_context.update_checkpoint()
+
+    with consumer:
+        while True:
+            consumer.receive_batch(on_event_batch=on_event_batch)
+
+except KeyboardInterrupt:
+    print("Bye...")
+# pylint: disable=broad-except
+except Exception as ex:
+    print(f"Exception: {ex}")
